@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+
+  nginx:
+    # image: nginx:1.25.3-bookworm
+    image: test:v1
+    container_name: nginx
+    restart: always
+    volumes:
+      - /etc/hosts:/etc/hosts:ro
+      - ./nginx.conf:/etc/openresty/nginx.conf #配置
+      - ./www.conf:/etc/nginx/conf.d/default.conf #配置
+      # # - /etc/nginx/ssl:/etc/nginx/ssl:ro #配置
+      # # - ./init.sh:/docker-entrypoint.d/01-init.sh
+    environment:
+      - TZ=Asia/Shanghai
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sS 'http://127.0.0.1:80' || exit 1"]
+      interval: 60s #健康检查的时间间隔，默认为 30s。
+      timeout: 60s    #健康检查的超时时间，默认为 30s。
+      retries: 3    #连续几次健康检查失败即认为容器不健康，默认为 3。
+    # ports:
+    #   - "80:80/tcp"
+    #   - "443:443/tcp"
+    network_mode: host
